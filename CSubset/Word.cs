@@ -1,6 +1,6 @@
 ﻿namespace CSubset;
 
-public class Token
+public class Word
 {
     public enum TokenType
     {
