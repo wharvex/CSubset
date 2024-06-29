@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "CSubset": {
+      "commandName": "Project",
+      "commandLineArgs": "interpret -r test.txt",
+      "workingDirectory": "$(MSBuildProjectDirectory)"
+    }
+  }
+}

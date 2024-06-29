@@ -1,11 +1,14 @@
-﻿using CSubset.FiniteAutomata.Chars;
-
-namespace CSubset.FiniteAutomata;
+﻿namespace CSubset.FiniteAutomata;
 
 public interface IFiniteAutomaton
 {
-    HashSet<StateType> States { get; }
-    HashSet<StateType> FinalStates { get; }
-    HashSet<IChar> Alphabet { get; }
-    IState Delta(StateType s, IChar c);
+    StateTypes States { get; }
+    StateTypes FinalStates { get; }
+    CharTypes Alphabet { get; }
+    StateTypes? Delta(StateTypes s, CharTypes c);
+
+    public static CharTypes GetAlphabet(params CharTypes[] cts)
+    {
+        return cts.Aggregate(CharTypes.None, (acc, nxt) => acc | nxt);
+    }
 }
