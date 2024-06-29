@@ -25,7 +25,8 @@ public class Program
             "" + IFiniteAutomaton.GetAlphabet(CharTypes.Eight, CharTypes.One).HasFlag(CharTypes.One)
         );
 
-        opts.InputFiles.ToList().ForEach(Console.WriteLine);
+        var files = opts.InputFiles.Select(File.ReadAllLines).ToList();
+        files.ForEach(f => f.ToList().ForEach(Console.WriteLine));
         return 0;
     }
 
