@@ -21,13 +21,10 @@ public class Program
 {
     public static int RunInterpretAndReturnExitCode(InterpretOptions opts)
     {
-        Console.WriteLine("Hello, World!");
-        Console.WriteLine(
-            "" + IFiniteAutomaton.GetAlphabet(CharTypes.Eight, CharTypes.One).HasFlag(CharTypes.One)
-        );
-
+        Console.WriteLine("file contents\n");
         var files = opts.InputFiles.Select(File.ReadAllLines).ToList();
         files.ForEach(f => f.ToList().ForEach(Console.WriteLine));
+        Console.WriteLine("\nbegin debug output\n");
 
         var filesByChar = opts.InputFiles.Select(File.ReadAllBytes).ToList();
         filesByChar.ForEach(f =>
@@ -44,15 +41,21 @@ public class Program
                 do
                 {
                     oldState = s;
+                    Console.WriteLine("inner loop");
+                    Console.WriteLine("i: " + i);
                     Console.WriteLine("oldState: " + oldState);
                     var nextChar = CharTypesHelper.GetCharTypeByChar((char)f[i++]);
                     Console.WriteLine("nextChar: " + nextChar);
-                    Console.WriteLine("next char in alphabet: " + fa.Alphabet.HasFlag(nextChar));
+                    Console.WriteLine("nextChar is in alphabet: " + fa.Alphabet.HasFlag(nextChar));
                     s = fa.Delta(oldState ?? StateTypes.S0, nextChar);
-                } while (s is not null && i < f.Length);
+                    Console.WriteLine("s: " + s);
+                    Console.WriteLine();
+                } while (s is not null);
 
+                Console.WriteLine("outer loop");
                 Console.WriteLine("i: " + i);
                 Console.WriteLine("fa contents: " + fa.ContentsString);
+                Console.WriteLine();
                 if (fa.FinalStates.HasFlag(oldState ?? StateTypes.Unrecognized))
                 {
                     // TODO: Figure out line numbers.
@@ -60,7 +63,8 @@ public class Program
                     fa = new UnsignedIntFa();
                 }
             } while (i < f.Length);
-            Console.WriteLine("Words length: " + words.Count);
+            Console.WriteLine("words length: " + words.Count);
+            Console.WriteLine("words:");
             words.ForEach(w => Console.WriteLine(((EnsembleWord)w).Contents));
         });
         return 0;

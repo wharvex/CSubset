@@ -9,19 +9,7 @@ public class UnsignedIntFa : IFiniteAutomaton
     public string ContentsString => Contents.ToString();
     public StateTypes States => StateTypes.S0 | StateTypes.S1 | StateTypes.S2;
     public StateTypes FinalStates => StateTypes.S1 | StateTypes.S2;
-    public CharTypes Alphabet =>
-        IFiniteAutomaton.GetAlphabet(
-            CharTypes.Zero,
-            CharTypes.One,
-            CharTypes.Two,
-            CharTypes.Three,
-            CharTypes.Four,
-            CharTypes.Five,
-            CharTypes.Six,
-            CharTypes.Seven,
-            CharTypes.Eight,
-            CharTypes.Nine
-        );
+    public CharTypes Alphabet => CharTypesHelper.GetAlphabetFor(this);
 
     public StateTypes? Delta(StateTypes s, CharTypes c)
     {

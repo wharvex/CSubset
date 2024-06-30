@@ -19,7 +19,7 @@ public enum CharTypes
 
 public static class CharTypesHelper
 {
-    public static Dictionary<char, CharTypes> CharTypeByChar =>
+    public static Dictionary<char, CharTypes> CharTypesMap =>
         new()
         {
             ['0'] = CharTypes.Zero,
@@ -34,28 +34,41 @@ public static class CharTypesHelper
             ['9'] = CharTypes.Nine,
         };
 
-    public static Dictionary<CharTypes, char> CharByCharType =>
-        new()
-        {
-            [CharTypes.Zero] = '0',
-            [CharTypes.One] = '1',
-            [CharTypes.Two] = '2',
-            [CharTypes.Three] = '3',
-            [CharTypes.Four] = '4',
-            [CharTypes.Five] = '5',
-            [CharTypes.Six] = '6',
-            [CharTypes.Seven] = '7',
-            [CharTypes.Eight] = '8',
-            [CharTypes.Nine] = '9',
-        };
-
     public static CharTypes GetCharTypeByChar(char c)
     {
-        return CharTypeByChar.GetValueOrDefault(c, CharTypes.Unrecognized);
+        return CharTypesMap.GetValueOrDefault(c, CharTypes.Unrecognized);
     }
 
     public static char GetCharByCharType(CharTypes ct)
     {
-        return CharByCharType.GetValueOrDefault(ct, '\0');
+        return CharTypesMap
+            .Where(kvp => kvp.Value == ct)
+            .Select(kvp => kvp.Key)
+            .FirstOrDefault('\0');
+    }
+
+    public static CharTypes GetAlphabetFor(IFiniteAutomaton fa) =>
+        fa switch
+        {
+            UnsignedIntFa
+                => GetAlphabet(
+                    CharTypes.Zero,
+                    CharTypes.One,
+                    CharTypes.Two,
+                    CharTypes.Three,
+                    CharTypes.Four,
+                    CharTypes.Five,
+                    CharTypes.Six,
+                    CharTypes.Seven,
+                    CharTypes.Eight,
+                    CharTypes.Nine
+                ),
+            _ => throw new InvalidOperationException()
+        };
+
+    public static CharTypes GetAlphabet(CharTypes baseCt, params CharTypes[] cts)
+    {
+        // This should return baseCt if cts is empty.
+        return cts.Aggregate(baseCt, (acc, nxt) => acc | nxt);
     }
 }
