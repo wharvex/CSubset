@@ -13,5 +13,6 @@ public enum StateTypes
     S6 = 1 << 6,
     S7 = 1 << 7,
     S8 = 1 << 8,
-    S9 = 1 << 9
+    S9 = 1 << 9,
+    Unrecognized = 1 << 10,
 }

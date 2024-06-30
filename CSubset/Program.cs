@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using CSubset.FiniteAutomata;
+using CSubset.Words;
 
 namespace CSubset;
 
@@ -27,6 +28,41 @@ public class Program
 
         var files = opts.InputFiles.Select(File.ReadAllLines).ToList();
         files.ForEach(f => f.ToList().ForEach(Console.WriteLine));
+
+        var filesByChar = opts.InputFiles.Select(File.ReadAllBytes).ToList();
+        filesByChar.ForEach(f =>
+        {
+            if (f.Length == 0)
+                return;
+            var fa = new UnsignedIntFa();
+            var i = 0;
+            StateTypes? s = null,
+                oldState;
+            List<IWord> words = [];
+            do
+            {
+                do
+                {
+                    oldState = s;
+                    Console.WriteLine("oldState: " + oldState);
+                    var nextChar = CharTypesHelper.GetCharTypeByChar((char)f[i++]);
+                    Console.WriteLine("nextChar: " + nextChar);
+                    Console.WriteLine("next char in alphabet: " + fa.Alphabet.HasFlag(nextChar));
+                    s = fa.Delta(oldState ?? StateTypes.S0, nextChar);
+                } while (s is not null && i < f.Length);
+
+                Console.WriteLine("i: " + i);
+                Console.WriteLine("fa contents: " + fa.ContentsString);
+                if (fa.FinalStates.HasFlag(oldState ?? StateTypes.Unrecognized))
+                {
+                    // TODO: Figure out line numbers.
+                    words.Add(new EnsembleWord(0, fa.ContentsString));
+                    fa = new UnsignedIntFa();
+                }
+            } while (i < f.Length);
+            Console.WriteLine("Words length: " + words.Count);
+            words.ForEach(w => Console.WriteLine(((EnsembleWord)w).Contents));
+        });
         return 0;
     }
 
